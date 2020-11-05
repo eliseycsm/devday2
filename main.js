@@ -8,7 +8,7 @@ const pubKey = process.env.PUBKEY
 const priKey = process.env.PRIKEY
 const timestamp = new Date().toString()// or new Date().getTime()
 
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 //create instance of express
 const app = express()
