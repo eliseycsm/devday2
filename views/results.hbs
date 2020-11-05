@@ -1,0 +1,12 @@
+<h2>{{msg}}</h2>
+
+{{#if results}}
+    {{#each finalList}}
+        <div class="card" style="width: 25%; display: inline-flex">
+            <img src="{{this.imgURL}}" class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title">{{this.name}}</h5>
+            </div>
+        </div>
+    {{/each}}
+{{/if}}

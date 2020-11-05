@@ -4,8 +4,8 @@ const fetch = require('node-fetch')
 const withQuery = require('with-query').default
 const md5 = require('md5')
 
-const pubKey = '1737b9f4c507031ec34abb0631ad6b2d'
-const priKey = '6e4afde7d76951c3749d11f61eddf601de24e0d0'
+const pubKey = process.env.PUBKEY
+const priKey = process.env.PRIKEY
 const timestamp = new Date().toString()// or new Date().getTime()
 
 const PORT = 3000;
@@ -27,19 +27,6 @@ if(pubKey && priKey) {
     console.error('either of the key is missing')
 }
 
-app.get("/search", (req, resp) => {
-    const searchName = req.query['name']
-
-})
-
-
-
-
-app.get("/", (req, resp) => {
-    resp.status(200)
-    resp.type('text/html')
-    resp.render('index')
-})
 
 const endpoint = "https://gateway.marvel.com/v1/public"
 const searchTerm = '/characters'
@@ -49,7 +36,22 @@ const marvelCharacter = process.argv[2]
 
 const fullURL = endpoint + searchTerm
 
-async function findCharacters(name) {
+
+const characterList = async (name) => {
+    let query = withQuery(fullURL, {
+        apikey: pubKey,
+        ts: timestamp,
+        hash: md5(timestamp+priKey+pubKey),
+        nameStartsWith: name
+        })
+
+    const result = await fetch(query)
+    const p = await result.json()
+
+    return p
+}
+
+/* async function findCharacters(name) {
     let query = withQuery(fullURL, {
         apikey: pubKey,
         ts: timestamp,
@@ -63,9 +65,9 @@ async function findCharacters(name) {
     if (p.data.count <= 0) 
         return -1
     return parseInt(p.data.results[0].id)
-}
+} */
 
-const getCharDetails = async (charId) => {
+/* const getCharDetails = async (charId) => {
     let ts = new Date().toString()
     const hash = md5(ts + priKey + pubKey)
 
@@ -82,19 +84,56 @@ const getCharDetails = async (charId) => {
 
     if (p.data.count <= 0) null
     return p.data.results
-}
+} */
 
-const run = async() => {
+// const run = async() => {
 
-    const charId = await findCharacters(marvelCharacter)
-    const data = await getCharDetails(charId)
+//     const charId = await findCharacters(marvelCharacter)
+//     const data = await getCharDetails(charId)
 
-    if (data)
-        return JSON.stringify(data)
-    return "{}"
-}
+//     if (data)
+//         return JSON.stringify(data)
+//     return "{}"
+// }
 
 // run()
 //     .then(result => {
 //         console.info(result)
 // })
+
+
+app.get("/search", async (req, resp) => {
+    const searchName = req.query['name']
+    const results = await characterList(searchName)
+    const charList = results.data.results
+    //console.info(`charList is:`, charList )
+
+    //clean data
+    const finalList = charList.map(elem => {
+        return { name: elem.name, imgURL: (elem.thumbnail.path + "." + elem.thumbnail.extension)}       
+    })
+    //console.info('finalList: ', cleaned)
+    if (results.data.count <= 0) {
+        const msg = "Sorry, there are no results"
+    } else {
+        msg = `Results for Marvel Character starting with: ${searchName}`
+    }
+
+    resp.status(200)
+    resp.type('text/html')
+    resp.render("results", {
+        msg,
+        results: !!(results.data.count > 0),
+        finalList
+    })
+    
+})
+
+
+
+
+app.get("/", (req, resp) => {
+    resp.status(200)
+    resp.type('text/html')
+    resp.render('index')
+})
