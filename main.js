@@ -27,8 +27,19 @@ if(pubKey && priKey) {
     console.error('either of the key is missing')
 }
 
+app.get("/search", (req, resp) => {
+    const searchName = req.query['name']
+
+})
 
 
+
+
+app.get("/", (req, resp) => {
+    resp.status(200)
+    resp.type('text/html')
+    resp.render('index')
+})
 
 const endpoint = "https://gateway.marvel.com/v1/public"
 const searchTerm = '/characters'
@@ -83,7 +94,7 @@ const run = async() => {
     return "{}"
 }
 
-run()
-    .then(result => {
-        console.info(result)
-})
+// run()
+//     .then(result => {
+//         console.info(result)
+// })
