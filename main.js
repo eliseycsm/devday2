@@ -105,7 +105,7 @@ app.get("/search", async (req, resp) => {
     const searchName = req.query['name']
     const results = await characterList(searchName)
     const charList = results.data.results
-    console.info(`charList is:`, charList )
+    //console.info(`charList is:`, charList )
 
     //clean data
     const finalList = charList.map(elem => {
