@@ -1,12 +1,17 @@
-<h2>{{msg}}</h2>
+{{#if noResults}}
+    
+    <h2>Sorry, there are no results.</h2>
 
-{{#if results}}
-    {{#each finalList}}
-        <div class="card" style="width: 25%; display: inline-flex">
+{{else}}
+    <h2>Search results for the following name: {{searchName}}</h2>
+    <div class="container">
+        {{#each finalList}}
+        <div class="card col-md-3" style="display: inline-block">
             <img src="{{this.imgURL}}" class="card-img-top">
             <div class="card-body">
                 <h5 class="card-title">{{this.name}}</h5>
             </div>
         </div>
-    {{/each}}
+        {{/each}}
+    </div>
 {{/if}}

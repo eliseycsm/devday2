@@ -38,15 +38,15 @@ const fullURL = endpoint + searchTerm
 
 const characterList = async (name) => {
     let query = withQuery(fullURL, {
+        nameStartsWith: name,
         apikey: pubKey,
         ts: timestamp,
         hash: md5(timestamp+priKey+pubKey),
-        nameStartsWith: name
         })
-
+    //console.log(query)
     const result = await fetch(query)
     const p = await result.json()
-
+    //console.log("p:", p)
     return p
 }
 
@@ -105,25 +105,20 @@ app.get("/search", async (req, resp) => {
     const searchName = req.query['name']
     const results = await characterList(searchName)
     const charList = results.data.results
-    //console.info(`charList is:`, charList )
+    console.info(`charList is:`, charList )
 
     //clean data
     const finalList = charList.map(elem => {
         return { name: elem.name, imgURL: (elem.thumbnail.path + "." + elem.thumbnail.extension)}       
     })
     //console.info('finalList: ', cleaned)
-    if (results.data.count <= 0) {
-        const msg = "Sorry, there are no results"
-    } else {
-        msg = `Results for Marvel Character starting with: ${searchName}`
-    }
-
+    
     resp.status(200)
     resp.type('text/html')
     resp.render("results", {
-        msg,
-        results: !!(results.data.count > 0),
-        finalList
+        noResults: !!(results.data.count <=0),
+        finalList,
+        searchName
     })
     
 })
