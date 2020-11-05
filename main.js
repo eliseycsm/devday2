@@ -21,7 +21,6 @@ app.set('views', __dirname + '/views')
 if(pubKey && priKey) {
     app.listen(PORT, () => {
         console.info(`Application started on port ${PORT} at ${new Date()}`)
-        console.info(`with valid keys ${priKey} & ${pubKey}`)
     })
 } else {
     console.error('either of the key is missing')
