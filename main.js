@@ -27,6 +27,9 @@ if(pubKey && priKey) {
     console.error('either of the key is missing')
 }
 
+
+
+
 const endpoint = "https://gateway.marvel.com/v1/public"
 const searchTerm = '/characters'
 //console.log(baseURL + searchTerm)
