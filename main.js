@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars')
 const fetch = require('node-fetch')
 const withQuery = require('with-query').default
 const md5 = require('md5')
+require('dotenv').config()
 
 const pubKey = process.env.PUBKEY
 const priKey = process.env.PRIKEY
